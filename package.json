@@ -1,0 +1,13 @@
+{
+  "name": "CMPE280_PROJECT_LIVEMAP",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "ejs": "*",
+    "express": "3.2.6",
+    "google-translate": "^1.0.7"
+  }
+}
