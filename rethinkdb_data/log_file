@@ -1,0 +1,21 @@
+2016-12-01T16:58:04.604608000 0.018877s notice: Recursively removing directory /Users/kaustubh/280/livemap/live_map/rethinkdb_data/tmp
+2016-12-01T16:58:04.606512000 0.020784s notice: Initializing directory /Users/kaustubh/280/livemap/live_map/rethinkdb_data
+2016-12-01T16:58:04.606614000 0.020883s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Users/kaustubh/280/livemap/live_map/rethinkdb_data' did not already exist or is empty.)
+2016-12-01T16:58:04.606662000 0.020930s notice: Running rethinkdb 2.3.5 (CLANG 8.0.0 (clang-800.0.38))...
+2016-12-01T16:58:04.636431000 0.050700s notice: Running on Darwin 16.1.0 x86_64
+2016-12-01T16:58:04.636552000 0.050821s notice: Loading data from directory /Users/kaustubh/280/livemap/live_map/rethinkdb_data
+2016-12-01T16:58:04.750315000 0.164583s info: Automatically using cache size of 100 MB
+2016-12-01T16:58:04.750323000 0.164591s warn: Cache size does not leave much memory for server and query overhead (available memory: 467 MB).
+2016-12-01T16:58:04.750329000 0.164597s warn: Cache size is very low and may impact performance.
+2016-12-01T16:58:04.752761000 0.167029s notice: Listening for intracluster connections on port 29015
+2016-12-01T16:58:04.754258000 0.168526s notice: Listening for client driver connections on port 28015
+2016-12-01T16:58:04.754454000 0.168721s notice: Listening for administrative HTTP connections on port 8080
+2016-12-01T16:58:04.755621000 0.169890s notice: Listening on cluster addresses: 127.0.0.1, 10.250.60.204, ::1, fe80::1%1, fe80::4d2:319c:378c:f47b%4, fe80::c8e:c9ff:fe23:167f%7, fe80::b2cf:d9e4:376e:585d%9
+2016-12-01T16:58:04.756591000 0.170859s notice: Listening on driver addresses: 127.0.0.1, 10.250.60.204, ::1, fe80::1%1, fe80::4d2:319c:378c:f47b%4, fe80::c8e:c9ff:fe23:167f%7, fe80::b2cf:d9e4:376e:585d%9
+2016-12-01T16:58:04.757400000 0.171667s notice: Listening on http addresses: 127.0.0.1, 10.250.60.204, ::1, fe80::1%1, fe80::4d2:319c:378c:f47b%4, fe80::c8e:c9ff:fe23:167f%7, fe80::b2cf:d9e4:376e:585d%9
+2016-12-01T16:58:04.757412000 0.171679s notice: Server ready, "Kaustubh_9_local_jh4" 86760061-ff62-4037-bb35-3915c923ab6d
+2016-12-01T16:58:27.944643000 23.358208s info: Table c5da87c1-d8a9-4562-bae3-c7e36167378a: Starting a new Raft election for term 1.
+2016-12-01T16:58:27.945380000 23.358945s info: Table c5da87c1-d8a9-4562-bae3-c7e36167378a: Added replica on this server.
+2016-12-01T16:58:27.954551000 23.368116s info: Table c5da87c1-d8a9-4562-bae3-c7e36167378a: This server is Raft leader for term 1. Latest log index is 0.
+2016-12-01T16:58:28.455397000 23.868962s info: Table c5da87c1-d8a9-4562-bae3-c7e36167378a: Configuration is changing.
+2016-12-01T16:59:08.146977000 63.559313s warn: Received invalid clustering header from [::1]:63674, closing connection -- something might be connecting to the wrong port.

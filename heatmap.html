@@ -1,0 +1,95 @@
+<!--
+
+No worker example of processing GeoJSON
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    
+     <!-- Basic Page Needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Heat Map</title>
+    <meta name="description" content="Seismic is an informative real-time data visualization website for information about earthquakes">
+    <meta name="keywords" content="seismic, disaster, natural calamity, earthquake, real-time, heatmaps, globe, maps, quake">
+    <meta name="author" content="navin1211@gmail.com">
+    
+     <!-- Favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="img/icon_1.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+    
+   
+    <link rel="stylesheet" href="https://js.arcgis.com/3.17/esri/css/esri.css">
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+            font-family: Arial;
+            background-color: black;
+            color: white;
+            font-size: large;
+            padding: 1px;
+        }
+    </style>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-88737721-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+</head>
+
+<body>
+<div>&nbsp;&nbsp; Seismic Heat Map</div>
+<div id="map"></div>
+
+<script>
+    var dojoConfig = {
+        paths: { libs: location.pathname.replace(/\/[^/]+$/, "") + "/libs" }
+    };
+</script>
+<script src="https://js.arcgis.com/3.17/"></script>
+<script>
+    var map;
+
+    require(["esri/map", "libs/EarthquakeLayerNW","esri/config","dojo/domReady!"], function(Map, EarthquakeLayer, esriConfig) {
+        map = new Map("map", {
+            basemap: "topo",
+            center: [-122.45, 37.75], // longitude, latitude
+            zoom: 3
+        });
+
+        esriConfig.defaults.io.corsEnabledServers.push("earthquake.usgs.gov");
+
+        // Reference: http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+        var earthquakeLayer = new EarthquakeLayer({
+            url: "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"
+        });
+
+        earthquakeLayer.init().then(function(layer){
+            map.addLayer(layer);
+        });
+    });
+</script>
+
+</body>
+</html>

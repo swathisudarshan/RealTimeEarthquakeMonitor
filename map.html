@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>WebGL Globe</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+      html {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000000 url(/loading.gif) center center no-repeat;
+        color: #ffffff;
+        font-family: sans-serif;
+        font-size: 13px;
+        line-height: 20px;
+        height: 100%;
+      }
+
+      #info {
+
+        font-size: 11px;
+        position: absolute;
+        bottom: 5px;
+        background-color: rgba(0,0,0,0.8);
+        border-radius: 3px;
+        right: 10px;
+        padding: 10px;
+
+      }
+
+      #currentInfo {
+        width: 270px;
+        position: absolute;
+        left: 20px;
+        top: 63px;
+
+        background-color: rgba(0,0,0,0.2);
+
+        border-top: 1px solid rgba(255,255,255,0.4);
+        padding: 10px;
+      }
+
+      a {
+        color: #aaa;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .bull {
+        padding: 0 5px;
+        color: #555;
+      }
+
+      #title {
+        position: absolute;
+        top: 20px;
+        width: 270px;
+        left: 20px;
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 3px;
+        font: 20px Georgia;
+        padding: 10px;
+      }
+
+      .year {
+        font: 16px Georgia;
+        line-height: 26px;
+        height: 30px;
+        text-align: center;
+        float: left;
+        width: 90px;
+        color: rgba(255, 255, 255, 0.4);
+
+        cursor: pointer;
+        -webkit-transition: all 0.1s ease-out;
+      }
+
+      .year:hover, .year.active {
+        font-size: 23px;
+        color: #fff;
+      }
+
+      #ce {
+        width: 107px;
+        height: 55px;
+        display: block;
+        position: absolute;
+        bottom: -20px;
+        left: 20px;
+      }
+
+
+    </style>
+	
+	<!-- Bablic Code Starts Here -->
+	
+	<script type="text/javascript" data-bablic="5735289a5cf0ec3d596b6763" data-bablic-m="['1463101613','en','en',1,['es_mx'],0,0,0,0,0,0,0,0,[],'catacalysm.herokuapp.com',[],['_v',2]]" src="//cdn2.bablic.com/js/bablic.3.3.js"></script>
+	
+	<!-- Bablic Code Ends Here -->
+    <script>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                  (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-88737721-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body>
+
+  <div id="container"></div>
+
+  <div id="info">
+    <strong><a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong><span class="bull">&bull;</span> Data acquired from <a href="http://reliefweb.int/">Relief Web API</a>
+  </div>
+
+  <div id="currentInfo">
+    <span id="year2000" class="year">2016</span>
+  </div>
+
+  <div id="title">
+    Disaster frequency by area
+  </div>
+
+  <a id="ce" href="/">
+    <span>Home</span>
+  </a>
+
+  <script type="text/javascript" src="/third-party/Detector.js"></script>
+  <script type="text/javascript" src="/third-party/three.min.js"></script>
+  <script type="text/javascript" src="/third-party/Tween.js"></script>
+  <script type="text/javascript" src="/globe.js"></script>
+  <script type="text/javascript">
+
+    if(!Detector.webgl){
+      Detector.addGetWebGLMessage();
+    } else {
+
+      var years = ['2000'];
+      var container = document.getElementById('container');
+      var globe = new DAT.Globe(container);
+
+      var i, tweens = [];
+      
+      var settime = function(globe, t) {
+        return function() {
+          new TWEEN.Tween(globe).to({time: t/years.length},500).easing(TWEEN.Easing.Cubic.EaseOut).start();
+          var y = document.getElementById('year'+years[t]);
+          if (y.getAttribute('class') === 'year active') {
+            return;
+          }
+          var yy = document.getElementsByClassName('year');
+          for(i=0; i<yy.length; i++) {
+            yy[i].setAttribute('class','year');
+          }
+          y.setAttribute('class', 'year active');
+        };
+      };
+      
+      for(var i = 0; i<years.length; i++) {
+        var y = document.getElementById('year'+years[i]);
+        y.addEventListener('mouseover', settime(globe,i), false);
+      }
+      
+      var xhr;
+      TWEEN.start();
+      
+      
+      xhr = new XMLHttpRequest();
+      xhr.open('GET', '/mapJSON', true);
+      xhr.onreadystatechange = function(e) {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            window.data = data;
+            
+            globe.addData(data[0][1], {format: 'magnitude', name: data[0][0], animated: true});
+            
+            globe.createPoints();
+            settime(globe,0)();
+            globe.animate();
+            document.body.style.backgroundImage = 'none'; // remove loading
+          }
+        }
+      };
+      xhr.send(null);
+    }
+
+  </script>
+
+  </body>
+
+</html>

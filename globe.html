@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+     <!-- Basic Page Needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seismic Globe</title>
+    <meta name="description" content="Seismic is an informative real-time data visualization website for information about earthquakes">
+    <meta name="keywords" content="seismic, disaster, natural calamity, earthquake, real-time, heatmaps, globe, maps, quake">
+    <meta name="author" content="navin1211@gmail.com">
+    
+     <!-- Favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="img/icon_1.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+    <script>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                  (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-88737721-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    
+    <style type="text/css">
+      html {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000000 url(loading.gif) center center no-repeat;
+        color: #ffffff;
+        font-family: sans-serif;
+        font-size: 13px;
+        line-height: 20px;
+        height: 100%;
+      }
+      #info {
+        font-size: 11px;
+        position: absolute;
+        bottom: 5px;
+        background-color: rgba(0,0,0,0.8);
+        border-radius: 3px;
+        right: 10px;
+        padding: 10px;
+      }
+      #currentInfo {
+        width: 270px;
+        position: absolute;
+        left: 20px;
+        top: 63px;
+		text-align = center;
+        background-color: rgba(0,0,0,0.40);
+        border-top: 1px solid rgba(255,255,255,0.4);
+        padding: 10px;
+      }
+	  
+	  #currentInfoStatus {
+		text-align = center;
+		font-size: 14px;
+	  }
+      a {
+        color: #aaa;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .bull {
+        padding: 0 5px;
+        color: #555;
+      }
+      #title {
+        position: absolute;
+        top: 20px;
+        width: 270px;
+        left: 20px;
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 3px;
+        font: 20px Georgia;
+        padding: 10px;
+      }
+      .time {
+        font: 16px Georgia;
+        line-height: 26px;
+        height: 30px;
+        text-align: center;
+        float: left;
+        width: 90px;
+        cursor: pointer;
+      }
+      #ce span {
+        display: none;
+      }
+      #ce {
+        width: 107px;
+        height: 55px;
+        display: block;
+        position: absolute;
+        bottom: 15px;
+        left: 20px;
+        background: url(ce.png);
+      }
+	  
+    </style>
+  </head>
+  <body>
+
+  <div id="container"></div>
+
+  <div id="info">
+	
+	<span><span class="bull">&bull;</span> <span id='lastUpdated'></span></span>
+  </div>
+
+  <div id="currentInfo">
+    <span id="all_day"><button class="time" onclick="createGlobe('all_day.json')">All day</button></span>
+	<span id="all_week"><button class="time" onclick="createGlobe('all_week.json')">All week</button></span>
+	<span id="all_month"><button class="time" onclick="createGlobe('all_month.json')">All month</button></span>
+	<span><div id="currentInfoStatus"></div></span>
+	
+  </div>
+
+  <div id="title">
+    Seismic Activity
+  </div>
+  <script type="text/javascript" src="third-party/Detector.js"></script>
+  <script type="text/javascript" src="third-party/three.min.js"></script>
+  <script type="text/javascript" src="third-party/Tween.js"></script>
+  <script type="text/javascript" src="globe.js"></script>
+  <script type="text/javascript">
+	if(!Detector.webgl){
+      Detector.addGetWebGLMessage();
+    } else {
+		var container = document.getElementById('container');
+		var globe = new DAT.Globe(container);
+		var xhr = new XMLHttpRequest();
+		window.onload = lastUpdated();
+		window.onload = createGlobe('all_day.json');
+	}
+	
+	var globeAnimated = false; //Has the globe already been animated?
+	function createGlobe(jsonInput){	
+		setCurrentInfoStatusLoading(jsonInput)
+		console.log(jsonInput);
+		
+		xhr.open('GET', 'data/'+jsonInput, true);
+		xhr.onreadystatechange = function (e) {
+			if (xhr.readyState == 4 && xhr.status == 200){
+				  globe.removeAllPoints();  
+				var data = JSON.parse(xhr.responseText);
+				 for (var i = 0; i < Math.min(data.length,100); i++){
+					globe.addData(data[i][1], {format: 'magnitude', name: 'Earthquakes'});
+				} 
+				console.log("JSON 2"+jsonInput);
+				globe.createPoints();
+				if (!globeAnimated){ //globe becomes really slow if when animated again - this prevents that
+					globe.animate();
+					globeAnimated = true;
+				}
+				
+				document.body.style.backgroundImage = 'none';
+			}
+		};
+		xhr.send(null);
+		setCurrentInfoStatus(jsonInput);
+	}
+	
+	function setCurrentInfoStatusLoading(jsonInput){
+		var response;
+		if (jsonInput == 'all_day.json'){
+			response = "<center>Now loading all earthquakes in the past 24 hours...</center>";
+		} else if (jsonInput == 'all_week.json'){
+			response = "<center>Now loading all earthquakes in the last week...</center>";
+		} else {
+			response = "<center>Now loading all earthquakes in the last 30 days...</center>"
+		}	
+		document.getElementById("currentInfoStatus").innerHTML = response;
+	}
+	
+	function setCurrentInfoStatus(jsonInput){
+		var response;
+		if (jsonInput == 'all_day.json'){
+			response = "<center>Past 24 hours</center>";
+		} else if (jsonInput == 'all_week.json'){
+			response = "<center>Past 7 days</center>";
+		} else {
+			response = "<center>Past 30 days</center>"
+		}	
+		document.getElementById("currentInfoStatus").innerHTML = response;	
+	}
+    
+	function lastUpdated(){
+		var done = false;
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', 'data/last_updated.json', true);
+		xhr.send(null);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4 && xhr.status === 200 ) {
+				 var time = JSON.stringify(JSON.parse(xhr.responseText)).replace(/['"]+/g, '');		 
+		}
+		var response = "Last updated: " + time;
+		document.getElementById('lastUpdated').innerHTML = response;
+		}
+	}
+  </script>
+
+  </body>
+
+</html>
